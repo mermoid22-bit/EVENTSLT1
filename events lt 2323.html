@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EVENTSLT – Kaunas 2026</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #ffffff;
+      color: #000000;
+    }
+
+    header {
+      padding: 16px;
+      text-align: center;
+      border-bottom: 1px solid #000;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    header button {
+      margin-top: 10px;
+      padding: 8px 14px;
+      background: #000;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .container {
+      padding: 14px;
+    }
+
+    .event {
+      border: 1px solid #000;
+      margin-bottom: 16px;
+    }
+
+    .event img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .event-content {
+      padding: 10px;
+    }
+
+    .event-content h2 {
+      margin: 0 0 6px;
+      font-size: 18px;
+    }
+
+    .event-content p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+
+    .vote {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .vote button {
+      padding: 6px 12px;
+      background: #000;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      border-top: 1px solid #000;
+      background: #fff;
+      display: flex;
+    }
+
+    nav button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>EVENTSLT – Kaunas 2026</h1>
+  <button onclick="showRandomEvent()">Rodyti atsitiktinį renginį</button>
+</header>
+
+<div id="events" class="container"></div>
+
+<div id="about" class="container hidden">
+  <h2>Apie programėlę</h2>
+  <p>
+    EVENTSLT – tai programėlė, skirta parodyti, kokie renginiai vyksta Kaune.
+    Vartotojai gali balsuoti už jiems patinkančius renginius.
+  </p>
+  <p>
+    Jeigu renginys surenka pakankamai balsų, jis patenka į miesto planus.
+    Programėlė informuos vartotojus ir teiks atnaujinimus apie renginius,
+    už kuriuos jie balsavo.
+  </p>
+</div>
+
+<nav>
+  <button onclick="showEvents()">Renginiai</button>
+  <button onclick="showAbout()">Informacija</button>
+</nav>
+
+<script>
+  const events = [
+    {
+      name: "Kauno muzikos festivalis",
+      location: "Žalgirio arena",
+      date: "2026-03-21",
+      category: "Muzika",
+      description: "Didžiausias metų muzikos renginys Kaune su Lietuvos ir užsienio atlikėjais.",
+      image: "https://images.unsplash.com/photo-1518972559570-7cc1309f3229",
+      votes: 0,
+      goal: 600
+    },
+    {
+      name: "Street Food Kaunas",
+      location: "Santakos parkas",
+      date: "2026-05-10",
+      category: "Maistas",
+      description: "Gatvės maisto festivalis su dešimtimis skirtingų skonių.",
+      image: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0",
+      votes: 0,
+      goal: 400
+    },
+    {
+      name: "Technologijų paroda",
+      location: "Kauno Mokslo sala",
+      date: "2026-04-05",
+      category: "Technologijos",
+      description: "Naujausios technologijos, inovacijos ir startuoliai.",
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
+      votes: 0,
+      goal: 300
+    },
+    {
+      name: "Kauno kino naktys",
+      location: "Romuvos kino teatras",
+      date: "2026-07-18",
+      category: "Kinas",
+      description: "Naktiniai filmų seansai po atviru dangumi.",
+      image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba",
+      votes: 0,
+      goal: 250
+    },
+    {
+      name: "Sporto diena Kaune",
+      location: "Ąžuolyno parkas",
+      date: "2026-06-02",
+      category: "Sportas",
+      description: "Sporto varžybos, veiklos ir užsiėmimai visai šeimai.",
+      image: "https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf",
+      votes: 0,
+      goal: 350
+    },
+    {
+      name: "Meno mugė",
+      location: "Laisvės alėja",
+      date: "2026-08-14",
+      category: "Menas",
+      description: "Vietinių menininkų darbai ir kūrybinės dirbtuvės.",
+      image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+      votes: 0,
+      goal: 200
+    }
+  ];
+
+  const eventsDiv = document.getElementById("events");
+
+  function renderEvents(list) {
+    eventsDiv.innerHTML = "";
+    list.forEach((e, index) => {
+      eventsDiv.innerHTML += `
+        <div class="event">
+          <img src="${e.image}" alt="${e.name}">
+          <div class="event-content">
+            <h2>${e.name}</h2>
+            <p><strong>Vieta:</strong> ${e.location}</p>
+            <p><strong>Data:</strong> ${e.date}</p>
+            <p><strong>Kategorija:</strong> ${e.category}</p>
+            <p>${e.description}</p>
+            <div class="vote">
+              <span>Balsai: ${e.votes} / ${e.goal}</span>
+              <button onclick="vote(${index})">Balsuoti</button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function vote(index) {
+    events[index].votes++;
+    renderEvents(events);
+  }
+
+  function showRandomEvent() {
+    const random = [events[Math.floor(Math.random() * events.length)]];
+    renderEvents(random);
+  }
+
+  function showEvents() {
+    document.getElementById("about").classList.add("hidden");
+    eventsDiv.classList.remove("hidden");
+    renderEvents(events);
+  }
+
+  function showAbout() {
+    eventsDiv.classList.add("hidden");
+    document.getElementById("about").classList.remove("hidden");
+  }
+
+  renderEvents(events);
+</script>
+
+</body>
+</html>
+
